@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هوش مصنوعی فتح‌الله | چت‌بات مشتی و کاردرست</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lati: {
+                            gold: '#d97706',
+                            crimson: '#dc2626',
+                            dark: '#0f172a',
+                            light: '#f8fafc'
+                        }
+                    },
+                    fontFamily: {
+                        vazir: ['Vazirmatn', 'Tahoma', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Vazirmatn -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js for 3D Character -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Marked for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        * {
+            font-family: 'Vazirmatn', sans-serif;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+        }
+        *::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        *::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        .prose pre {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            position: relative;
+        }
+        .prose code {
+            background-color: rgba(100, 116, 139, 0.15);
+            padding: 0.15rem 0.35rem;
+            border-radius: 0.375rem;
+            font-family: monospace;
+            font-size: 0.875em;
+        }
+        .prose pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .creepy-glow {
+            filter: drop-shadow(0 0 14px rgba(220, 38, 38, 0.45));
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+        }
+        /* Pulse eye animation */
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .floating-badge {
+            animation: subtle-float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 overflow-x-hidden selection:bg-amber-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="h-16 border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 flex items-center justify-between transition-colors shadow-sm">
+        <div class="flex items-center gap-3">
+            <!-- Mobile Menu Toggle -->
+            <button id="sidebarToggleBtn" class="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 via-amber-600 to-black flex items-center justify-center text-white shadow-md shadow-red-500/20">
+                    <i class="fa-solid fa-skull text-xl animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg leading-tight tracking-tight flex items-center gap-2">
+                        <span>هوش مصنوعی فتح‌الله</span>
+                        <span id="tempBadge" class="hidden text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">موقت (بدون ردپا)</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">لوتی، کاردرست و همه‌فن‌حریفِ روزگار</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls: Theme Toggle & Settings -->
+        <div class="flex items-center gap-2">
+            <button id="toggleThemeBtn" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-amber-400 transition" title="تغییر تم (سفید/سیاه)">
+                <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
+            </button>
+            <button id="openSettingsBtn" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 transition" title="تنظیمات API">
+                <i class="fa-solid fa-sliders text-base"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex overflow-hidden relative">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-16 right-0 w-72 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 z-30 flex flex-col transition-all duration-300 transform translate-x-full lg:translate-x-0 shadow-xl lg:shadow-none">
+            <!-- Sidebar Actions -->
+            <div class="p-4 space-y-2.5 border-b border-slate-100 dark:border-slate-800/80">
+                <button id="newChatBtn" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-amber-600 dark:hover:bg-amber-500 text-white font-medium flex items-center justify-center gap-2 shadow-sm transition active:scale-[0.98]">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>چت جدید مشتی</span>
+                </button>
+                <button id="tempChatBtn" class="w-full py-2.5 px-4 rounded-xl border border-dashed border-amber-500/50 hover:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-medium flex items-center justify-center gap-2 transition active:scale-[0.98]">
+                    <i class="fa-solid fa-user-secret text-sm"></i>
+                    <span>چت موقت (لوتی‌وار پاک کن)</span>
+                </button>
+            </div>
+
+            <!-- History List -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-1" id="chatHistoryList">
+                <div class="px-2 py-1 text-xs font-semibold text-slate-400 dark:text-slate-500">تاریخچه هم‌کلامی‌ها</div>
+                <!-- Chat history items injected dynamically -->
+            </div>
+
+            <!-- Footer Stats in Sidebar -->
+            <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/30 flex items-center justify-between text-xs text-slate-500">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>فتح‌الله بیداره</span>
+                </span>
+                <button id="clearAllChatsBtn" class="text-rose-500 hover:underline hover:text-rose-600 text-xs">پاک کردن همه</button>
+            </div>
+        </aside>
+
+        <!-- Sidebar Backdrop for Mobile -->
+        <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-20 hidden lg:hidden"></div>
+
+        <!-- Chat Main Area -->
+        <main class="flex-1 flex flex-col relative h-[calc(100vh-4rem)] bg-white dark:bg-slate-950 transition-colors">
+            
+            <!-- Chat Messages Container -->
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 scroll-smooth">
+                <!-- Welcome hero card if no messages -->
+                <div id="welcomeBox" class="max-w-2xl mx-auto my-8 text-center space-y-5">
+                    <div class="inline-flex p-4 rounded-3xl bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                        <i class="fa-solid fa-hand-fist text-4xl"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                            نوکرم داداش! فتح‌الله در خدمتته.
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
+                            هر سوال فنی، کدنویسی، فرمول ریاضی، درد و دل یا چالش سنگین داری بگو تا با مرام و معرفت لاتی برات حلش کنم! اون بالا سمت چپ هم حواسم بهت هست...
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-right">
+                        <button class="quick-prompt p-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 dark:hover:border-amber-500/60 hover:bg-amber-50/30 dark:hover:bg-slate-900 transition text-sm group">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">💻 کدنویسی و دیباگ</span>
+                            <span class="text-xs text-slate-400">یه کد پایتون برام بزن که کارش ردیف باشه</span>
+                        </button>
+                        <button class="quick-prompt p-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 dark:hover:border-amber-500/60 hover:bg-amber-50/30 dark:hover:bg-slate-900 transition text-sm group">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">☕ چاق سلامتی و صحبت</span>
+                            <span class="text-xs text-slate-400">اصول رفاقت و معرفت در مرام لاتی چیه؟</span>
+                        </button>
+                        <button class="quick-prompt p-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 dark:hover:border-amber-500/60 hover:bg-amber-50/30 dark:hover:bg-slate-900 transition text-sm group">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">⚡ حل مسائل پیچیده</span>
+                            <span class="text-xs text-slate-400">ساده‌ترین راه یادگیری هوش مصنوعی چیه داش فتح‌الله؟</span>
+                        </button>
+                        <button class="quick-prompt p-3 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 dark:hover:border-amber-500/60 hover:bg-amber-50/30 dark:hover:bg-slate-900 transition text-sm group">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">🛡️ چت موقت و مخفی</span>
+                            <span class="text-xs text-slate-400">یه موضوع رو محرمانه باهم حل کنیم</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages will be appended here -->
+            </div>
+
+            <!-- Input Bar Area -->
+            <div class="p-4 sm:p-5 border-t border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+                <form id="chatForm" class="max-w-4xl mx-auto flex flex-col gap-2">
+                    <div class="relative flex items-end bg-slate-100 dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 focus-within:border-amber-500 dark:focus-within:border-amber-500 transition-all shadow-inner px-3 py-2">
+                        <textarea id="userInput" rows="1" placeholder="فرما داش گلم، بنویس تا فتح‌الله ردیفش کنه..." class="w-full bg-transparent resize-none border-0 focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm sm:text-base outline-none max-h-36 py-1.5 leading-relaxed"></textarea>
+                        
+                        <div class="flex items-center gap-1.5 mr-2 pb-1">
+                            <button type="submit" id="sendBtn" class="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white flex items-center justify-center transition shadow-md shadow-amber-600/30 disabled:opacity-40 disabled:cursor-not-allowed">
+                                <i class="fa-solid fa-paper-plane -rotate-90 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-2">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-bolt text-amber-500"></i>
+                            <span>متصل به سرور ابری آروان | مدل: <span id="currentModelLabel" class="font-mono text-slate-600 dark:text-slate-300">gpt-4o-mini</span></span>
+                        </span>
+                        <span>شیفت + اینتر برای خط بعد</span>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Floating Living 3D Avatar Container (فتح‌الله ترسناک و زنده) -->
+        <div id="characterWidget" class="fixed top-20 left-4 z-30 flex flex-col items-center select-none pointer-events-auto transition-transform duration-300">
+            <div class="relative group cursor-pointer" id="avatarInteractBox" title="فتح‌الله همیشه زیرچشمی نگات می‌کنه!">
+                <!-- Three.js Canvas Container -->
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden glass-panel border-2 border-red-500/30 dark:border-red-500/40 shadow-xl shadow-red-950/20 relative flex items-center justify-center">
+                    <div id="threeCanvasWrapper" class="w-full h-full"></div>
+                    <!-- Status indicator dot -->
+                    <span id="charEyePulse" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                </div>
+                <!-- Small Floating Label -->
+                <div class="absolute -bottom-2 bg-slate-900/90 text-red-400 text-[10px] px-2 py-0.5 rounded-full border border-red-500/30 shadow whitespace-nowrap font-bold tracking-wider left-1/2 -translate-x-1/2">
+                    فتح‌الله زنده
+                </div>
+            </div>
+            <!-- Speech Bubble from Character on Hover/Action -->
+            <div id="characterSpeech" class="mt-3 opacity-0 pointer-events-none transition-all duration-300 transform -translate-y-2 max-w-[180px] bg-white dark:bg-slate-900 border border-red-500/40 text-slate-800 dark:text-slate-100 text-xs p-2 rounded-xl shadow-lg text-center font-medium">
+                «حواسم به تک‌تک حرکاتت هست مشتی!»
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 w-full max-w-md p-6 shadow-2xl relative space-y-5 animate-scale-up">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-gears text-amber-500 text-lg"></i>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">تنظیمات مرام و اتصال به آروان</h3>
+                </div>
+                <button id="closeSettingsBtn" class="w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Base URL ابر آروان</label>
+                    <input type="text" id="apiEndpointInput" value="https://api.arvancloudai.ir/v1" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-amber-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">کلید API (API Key)</label>
+                    <input type="password" id="apiKeyInput" value="9991d24a-e9f5-594b-b6f1-b9e4fbc2a117" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-amber-500 outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">کلید ارائه‌شده ذخیره شده و برای چت استفاده می‌شود.</p>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">مدل هوش مصنوعی</label>
+                    <select id="modelSelect" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-amber-500 outline-none">
+                        <option value="gpt-4o-mini">gpt-4o-mini (سریع و پیشنهادی)</option>
+                        <option value="gpt-4o">gpt-4o (قدرتمند و همه‌چیزدان)</option>
+                        <option value="meta-llama/Llama-3.1-8B-Instruct">Llama-3.1-8B-Instruct</option>
+                        <option value="meta-llama/Llama-3.3-70B-Instruct">Llama-3.3-70B-Instruct</option>
+                    </select>
+                </div>
+
+                <div class="pt-2">
+                    <button id="saveSettingsBtn" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold transition">
+                        تایید و ثبت ردیف
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white border border-amber-500/40 px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-circle-check text-amber-400" id="toastIcon"></i>
+        <span id="toastMsg">پیام</span>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // System Persona Prompt for Fathollah
+        const SYSTEM_PROMPT = `تو یک هوش مصنوعی بسیار خفن، رفیق‌باز، با معرفت، کاردرست و همه‌چیزدان به نام «فتح‌الله» هستی.
+ویژگی‌های شخصیتی فتح‌الله:
+1. لحن صحبت: لاتی تهرانی، اصیل، با معرفت، داش‌مشتی، لوتی، خاکی، صمیمی و شیرین (از واژه‌ها و تکیه‌کلام‌هایی مثل: "نوکرم"، "داش گلم"، "مشتی"، "فدایی داری"، "ردیفش می‌کنم"، "رو جفت چشمام"، "سلطان"، "دمت گرم"، "کارت درسته"، "غم نبینی" به جا و طبیعی استفاده کن).
+2. هرگز بی‌ادبی یا فحاشی نکن، بلکه یک لاتی بامعرفت، باکلاس، مشتی و مؤدب باش (مثل لوتی‌های جوانمرد قدیمی).
+3. تخصص فوق‌العاده: در تمامی زمینه‌ها (کدنویسی، حل مسائل پیچیده، مشاوره، علم، تاریخ، زندگی) به بالاترین سطح ممکن دقیق، علمی، تمیز و کامل جواب بده.
+4. اگر کدی خواست، با بهترین استانداردهای برنامه‌نویسی و کامنت‌های تمیز ارائه بده.
+5. پاسخ‌هایت زنده، جذاب و با روحیه مردانگی و مرام و رفاقت باشد. همیشه خودت رو به عنوان "فتح‌الله" بشناس.`;
+
+        // App State
+        let isDarkMode = false;
+        let isTemporaryChat = false;
+        let currentChatId = null;
+        let chats = []; // { id, title, messages: [] }
+        let currentMessages = [];
+        let isGenerating = false;
+
+        // Configuration
+        let config = {
+            baseUrl: 'https://api.arvancloudai.ir/v1',
+            apiKey: '9991d24a-e9f5-594b-b6f1-b9e4fbc2a117',
+            model: 'gpt-4o-mini'
+        };
+
+        // DOM Elements
+        const messagesContainer = document.getElementById('messagesContainer');
+        const welcomeBox = document.getElementById('welcomeBox');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const tempChatBtn = document.getElementById('tempChatBtn');
+        const tempBadge = document.getElementById('tempBadge');
+        const chatHistoryList = document.getElementById('chatHistoryList');
+        const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const settingsModal = document.getElementById('settingsModal');
+        const openSettingsBtn = document.getElementById('openSettingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const apiEndpointInput = document.getElementById('apiEndpointInput');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const modelSelect = document.getElementById('modelSelect');
+        const currentModelLabel = document.getElementById('currentModelLabel');
+        const characterSpeech = document.getElementById('characterSpeech');
+        const avatarInteractBox = document.getElementById('avatarInteractBox');
+
+        // Init App
+        function initApp() {
+            loadConfig();
+            loadTheme();
+            loadHistory();
+            startNewChat(false);
+            initThreeCharacter();
+            setupEvents();
+        }
+
+        // --- Theme Handlers ---
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('fathollah_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                enableDarkMode(true);
+            } else {
+                enableDarkMode(false);
+            }
+        }
+
+        function enableDarkMode(dark) {
+            isDarkMode = dark;
+            if (dark) {
+                document.documentElement.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-400';
+                localStorage.setItem('fathollah_theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-slate-600';
+                localStorage.setItem('fathollah_theme', 'light');
+            }
+        }
+
+        // --- Config Handlers ---
+        function loadConfig() {
+            const saved = localStorage.getItem('fathollah_config');
+            if (saved) {
+                try {
+                    config = { ...config, ...JSON.parse(saved) };
+                } catch(e){}
+            }
+            apiEndpointInput.value = config.baseUrl;
+            apiKeyInput.value = config.apiKey;
+            modelSelect.value = config.model;
+            currentModelLabel.innerText = config.model;
+        }
+
+        function saveConfig() {
+            config.baseUrl = apiEndpointInput.value.trim().replace(/\/+$/, "");
+            config.apiKey = apiKeyInput.value.trim();
+            config.model = modelSelect.value;
+            localStorage.setItem('fathollah_config', JSON.stringify(config));
+            currentModelLabel.innerText = config.model;
+            showToast('تنظیمات فتح‌الله با موفقیت ردیف شد!');
+            settingsModal.classList.add('hidden');
+            settingsModal.classList.remove('flex');
+        }
+
+        // --- History & Storage ---
+        function loadHistory() {
+            const saved = localStorage.getItem('fathollah_chats');
+            if (saved) {
+                try {
+                    chats = JSON.parse(saved);
+                } catch(e){
+                    chats = [];
+                }
+            }
+            renderHistoryList();
+        }
+
+        function saveHistory() {
+            if (!isTemporaryChat && chats.length > 0) {
+                localStorage.setItem('fathollah_chats', JSON.stringify(chats));
+            }
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
+            chatHistoryList.innerHTML = `<div class="px-2 py-1 text-xs font-semibold text-slate-400 dark:text-slate-500">تاریخچه هم‌کلامی‌ها</div>`;
+            
+            if (chats.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-xs text-slate-400 p-3 text-center';
+                empty.innerText = 'هنوز کلامی ردوبدل نشده داش!';
+                chatHistoryList.appendChild(empty);
+                return;
+            }
+
+            chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = `group flex items-center justify-between p-2.5 rounded-xl cursor-pointer text-xs font-medium transition ${
+                    chat.id === currentChatId && !isTemporaryChat
+                        ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30'
+                        : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                }`;
+                
+                item.innerHTML = `
+                    <div class="flex items-center gap-2 truncate flex-1 pl-2">
+                        <i class="fa-regular fa-message text-slate-400"></i>
+                        <span class="truncate">${chat.title || 'گفتگوی مشتی'}</span>
+                    </div>
+                    <button class="delete-chat opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition" data-id="${chat.id}" title="حذف">
+                        <i class="fa-solid fa-trash-can text-[11px]"></i>
+                    </button>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-chat')) {
+                        deleteChat(chat.id);
+                        return;
+                    }
+                    loadChatById(chat.id);
+                });
+
+                chatHistoryList.appendChild(item);
+            });
+        }
+
+        function startNewChat(temporary = false) {
+            isTemporaryChat = temporary;
+            currentChatId = 'chat_' + Date.now();
+            currentMessages = [];
+
+            if (temporary) {
+                tempBadge.classList.remove('hidden');
+                showToast('حالت موقت فعال شد؛ هیچ پیامی در سیستم ذخیره نمیشه مشتی!', 'fa-user-secret');
+                sayCharacter("چت موقته داش گلم؛ خیالت راحت ردپایی نمیمونه.");
+            } else {
+                tempBadge.classList.add('hidden');
+            }
+
+            renderMessages();
+            renderHistoryList();
+            userInput.focus();
+            closeMobileSidebar();
+        }
+
+        function loadChatById(id) {
+            const found = chats.find(c => c.id === id);
+            if (found) {
+                isTemporaryChat = false;
+                tempBadge.classList.add('hidden');
+                currentChatId = found.id;
+                currentMessages = [...found.messages];
+                renderMessages();
+                renderHistoryList();
+                closeMobileSidebar();
+                sayCharacter("خوش اومدی سالار، دفتر قبلی رو باز کردم!");
+            }
+        }
+
+        function deleteChat(id) {
+            chats = chats.filter(c => c.id !== id);
+            saveHistory();
+            if (currentChatId === id) {
+                startNewChat(false);
+            }
+            showToast('گفتگو پاک شد داش.');
+        }
+
+        function clearAllHistory() {
+            if (chats.length === 0) return;
+            chats = [];
+            localStorage.removeItem('fathollah_chats');
+            startNewChat(false);
+            showToast('تمام تاریخچه‌ها نیست و نابود شد سلطان!');
+        }
+
+        // --- Message Rendering ---
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
+
+            if (currentMessages.length === 0) {
+                messagesContainer.appendChild(welcomeBox);
+                welcomeBox.classList.remove('hidden');
+                return;
+            } else {
+                welcomeBox.classList.add('hidden');
+            }
+
+            currentMessages.forEach(msg => {
+                appendMessageNode(msg.role, msg.content, false);
+            });
+
+            scrollToBottom();
+        }
+
+        function appendMessageNode(role, text, animate = true) {
+            const isUser = role === 'user';
+            const msgWrapper = document.createElement('div');
+            msgWrapper.className = `flex gap-3 sm:gap-4 max-w-3xl ${isUser ? 'mr-auto flex-row-reverse' : 'ml-auto flex-row'} ${animate ? 'animate-fade-in' : ''}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center shrink-0 font-bold text-sm shadow-md ${
+                isUser 
+                    ? 'bg-slate-700 text-white' 
+                    : 'bg-gradient-to-tr from-red-600 via-amber-600 to-black text-white shadow-red-500/20'
+            }`;
+            avatar.innerHTML = isUser ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-skull"></i>';
+
+            const bubbleContainer = document.createElement('div');
+            bubbleContainer.className = `flex flex-col space-y-1 max-w-[85%] sm:max-w-[78%] ${isUser ? 'items-end' : 'items-start'}`;
+
+            const authorLabel = document.createElement('span');
+            authorLabel.className = 'text-[11px] font-bold text-slate-400 px-1';
+            authorLabel.innerText = isUser ? 'شما' : 'فتح‌الله (لوتی)';
+
+            const bubble = document.createElement('div');
+            bubble.className = `p-3.5 sm:p-4 rounded-2xl text-sm sm:text-base leading-relaxed ${
+                isUser
+                    ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded-tr-none shadow-md shadow-amber-600/10'
+                    : 'bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none shadow-sm prose dark:prose-invert max-w-none'
+            }`;
+
+            if (isUser) {
+                bubble.innerText = text;
+            } else {
+                bubble.innerHTML = marked.parse(text);
+                // Add copy buttons to pre blocks
+                bubble.querySelectorAll('pre').forEach(pre => {
+                    const btn = document.createElement('button');
+                    btn.className = 'absolute top-2 right-2 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 px-2 py-1 rounded-md transition flex items-center gap-1 border border-slate-600';
+                    btn.innerHTML = '<i class="fa-regular fa-copy"></i> کپی';
+                    btn.onclick = () => {
+                        const code = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+                        copyToClipboard(code);
+                        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> ردیف شد';
+                        setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i> کپی', 2000);
+                    };
+                    pre.appendChild(btn);
+                });
+            }
+
+            bubbleContainer.appendChild(authorLabel);
+            bubbleContainer.appendChild(bubble);
+            msgWrapper.appendChild(avatar);
+            msgWrapper.appendChild(bubbleContainer);
+            messagesContainer.appendChild(msgWrapper);
+
+            scrollToBottom();
+            return bubble;
+        }
+
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Safe clipboard copy
+        function copyToClipboard(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('کد کپی شد داداش!');
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // --- Chat Dispatcher ---
+        async function handleSendMessage(e) {
+            if (e) e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text || isGenerating) return;
+
+            // Reset input
+            userInput.value = '';
+            adjustTextareaHeight();
+
+            // Hide welcome box
+            welcomeBox.classList.add('hidden');
+
+            // Add user message
+            currentMessages.push({ role: 'user', content: text });
+            appendMessageNode('user', text);
+
+            // Update title if first message
+            if (currentMessages.length === 1 && !isTemporaryChat) {
+                const title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
+                chats.unshift({
+                    id: currentChatId,
+                    title: title,
+                    messages: currentMessages
+                });
+                saveHistory();
+            }
+
+            // Create placeholder for AI response
+            isGenerating = true;
+            sendBtn.disabled = true;
+            sayCharacter("یه لحظه دندون رو جیگر بذار داداش، دارم با مرام ردیفش می‌کنم...");
+            triggerSpookyEyePulse(true);
+
+            // Typing indicator bubble
+            const assistantBubble = appendMessageNode('assistant', '<div class="flex items-center gap-1.5 py-1 text-slate-400"><i class="fa-solid fa-circle text-[7px] animate-bounce"></i><i class="fa-solid fa-circle text-[7px] animate-bounce [animation-delay:0.2s]"></i><i class="fa-solid fa-circle text-[7px] animate-bounce [animation-delay:0.4s]"></i><span class="text-xs mr-2">فتح‌الله در حال تامل لاتی...</span></div>');
+
+            try {
+                const replyText = await fetchAIResponse(currentMessages);
+                assistantBubble.innerHTML = marked.parse(replyText);
+                currentMessages.push({ role: 'assistant', content: replyText });
+
+                // Attach copy buttons
+                assistantBubble.querySelectorAll('pre').forEach(pre => {
+                    const btn = document.createElement('button');
+                    btn.className = 'absolute top-2 right-2 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 px-2 py-1 rounded-md transition flex items-center gap-1 border border-slate-600';
+                    btn.innerHTML = '<i class="fa-regular fa-copy"></i> کپی';
+                    btn.onclick = () => {
+                        const code = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+                        copyToClipboard(code);
+                        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> ردیف شد';
+                        setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i> کپی', 2000);
+                    };
+                    pre.appendChild(btn);
+                });
+
+                if (!isTemporaryChat) {
+                    const chatIndex = chats.findIndex(c => c.id === currentChatId);
+                    if (chatIndex !== -1) {
+                        chats[chatIndex].messages = currentMessages;
+                        saveHistory();
+                    }
+                }
+                sayCharacter("نوکرم داداش! تحویل بگیر، تمام و کمال تقدیم به شما.");
+            } catch (err) {
+                console.error("API error:", err);
+                const fallbackReply = generateFallbackLatiResponse(text);
+                assistantBubble.innerHTML = marked.parse(fallbackReply);
+                currentMessages.push({ role: 'assistant', content: fallbackReply });
+                sayCharacter("ارتباط یه خُرده قفل کرد داش، ولی فتح‌الله تنهات نذاشت!");
+            } finally {
+                isGenerating = false;
+                sendBtn.disabled = false;
+                triggerSpookyEyePulse(false);
+                scrollToBottom();
+            }
+        }
+
+        // --- Fetch ArvanCloud AI API ---
+        async function fetchAIResponse(messages) {
+            const url = `${config.baseUrl}/chat/completions`;
+            
+            const payload = {
+                model: config.model,
+                messages: [
+                    { role: "system", content: SYSTEM_PROMPT },
+                    ...messages.map(m => ({ role: m.role, content: m.content }))
+                ],
+                temperature: 0.7,
+                max_tokens: 1500
+            };
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${config.apiKey}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errData = await response.text();
+                throw new Error(`خطای سرور آروان: ${response.status} - ${errData}`);
+            }
+
+            const data = await response.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                return data.choices[0].message.content;
+            } else {
+                throw new Error("پاسخ دریافتی ناقص بود.");
+            }
+        }
+
+        // Fallback Lati Generator if network/CORS or API has temporary hiccup
+        function generateFallbackLatiResponse(prompt) {
+            const latiQuotes = [
+                `نوکرم داداش گلم! اینترنت یا شبکه یه نموره خط‌روخط شد ولی فتح‌الله کارتو لنگ نمی‌ذاره.\n\nدر جواب به فرمایشت: **«${prompt}»** باید بگم که تو مرام ما رفقا همه‌چی حله! هر سوال فنی، برنامه‌نویسی یا هر مشکلی داری، دوباره یه اشاره کن تا از سرور آروان برات شخم بزنم بکشم بیرون. سلامت و پایدار باشی سلطان!`,
+                `چاکرم باوفا! پیامتو گرفتم و رو تخم چشمام گذاشتم.\n\nدر مورد **«${prompt}»**؛ فتح‌الله میگه تو زندگی همیشه فرمون رو محکم بگیر و با توکل جلو برو. اگر کد می‌خوای یا فرمول، سرور یه سرفه‌ای کرد ولی من پیشتم! دوباره صدام کن با معرفت.`,
+                `سلامتیت رفیق! امر کردی: *«${prompt}»*.\n\nرو جفت چشمام سالار! فتح‌الله همیشه حواسش به داش‌هاش هست. تنظیمات کلید آروان رو هم اگه خواستی از آیکون چرخ‌دنده بالا چک کن تا موشک برات جواب بیاره!`
+            ];
+            return latiQuotes[Math.floor(Math.random() * latiQuotes.length)];
+        }
+
+        // --- 3D Interactive Spooky & Alive Character (Three.js) ---
+        let scene, camera, renderer, skullGroup, creepyEyeLeft, creepyEyeRight, darkAuraParticles;
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+
+        function initThreeCharacter() {
+            const container = document.getElementById('threeCanvasWrapper');
+            const width = container.clientWidth || 100;
+            const height = container.clientHeight || 100;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.z = 4.2;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const redPointLight = new THREE.PointLight(0xdc2626, 2.5, 10);
+            redPointLight.position.set(0, 1, 2);
+            scene.add(redPointLight);
+
+            const amberRimLight = new THREE.PointLight(0xd97706, 2.0, 10);
+            amberRimLight.position.set(-2, -1, 1);
+            scene.add(amberRimLight);
+
+            // Create Spooky Alive Cyber-Skull / Entity (فتح‌الله)
+            skullGroup = new THREE.Group();
+
+            // Head / Core
+            const headGeo = new THREE.DodecahedronGeometry(1.0, 1);
+            const headMat = new THREE.MeshStandardMaterial({
+                color: 0x1e293b,
+                metalness: 0.85,
+                roughness: 0.25,
+                wireframe: false
+            });
+            const headMesh = new THREE.Mesh(headGeo, headMat);
+            skullGroup.add(headMesh);
+
+            // Spooky Wireframe Overlay
+            const wireGeo = new THREE.DodecahedronGeometry(1.03, 1);
+            const wireMat = new THREE.MeshBasicMaterial({
+                color: 0xdc2626,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.35
+            });
+            const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+            skullGroup.add(wireMesh);
+
+            // Creepy Glowing Eyes
+            const eyeGeo = new THREE.SphereGeometry(0.18, 16, 16);
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+
+            creepyEyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+            creepyEyeLeft.position.set(-0.35, 0.2, 0.85);
+            skullGroup.add(creepyEyeLeft);
+
+            creepyEyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+            creepyEyeRight.position.set(0.35, 0.2, 0.85);
+            skullGroup.add(creepyEyeRight);
+
+            // Eye Pupil Dots (creepy focus)
+            const pupilGeo = new THREE.SphereGeometry(0.07, 8, 8);
+            const pupilMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const pupilLeft = new THREE.Mesh(pupilGeo, pupilMat);
+            pupilLeft.position.set(0, 0, 0.14);
+            creepyEyeLeft.add(pupilLeft);
+
+            const pupilRight = new THREE.Mesh(pupilGeo, pupilMat);
+            pupilRight.position.set(0, 0, 0.14);
+            creepyEyeRight.add(pupilRight);
+
+            // Jaw / Mouth piece (gives skull look)
+            const jawGeo = new THREE.BoxGeometry(0.7, 0.35, 0.6);
+            const jawMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.3 });
+            const jaw = new THREE.Mesh(jawGeo, jawMat);
+            jaw.position.set(0, -0.75, 0.4);
+            skullGroup.add(jaw);
+
+            // Floating Spooky Orbiting Particles
+            const particlesGeo = new THREE.BufferGeometry();
+            const particleCount = 45;
+            const posArray = new Float32Array(particleCount * 3);
+            for(let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 3.5;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0xd97706,
+                transparent: true,
+                opacity: 0.7
+            });
+            darkAuraParticles = new THREE.Points(particlesGeo, particleMat);
+            scene.add(darkAuraParticles);
+
+            scene.add(skullGroup);
+
+            // Mouse tracking to make eyes and head follow the user
+            window.addEventListener('mousemove', (e) => {
+                const normX = (e.clientX / window.innerWidth) * 2 - 1;
+                const normY = -(e.clientY / window.innerHeight) * 2 + 1;
+                targetRotationY = normX * 0.75;
+                targetRotationX = -normY * 0.55;
+            });
+
+            // Touch support for mobile interaction
+            window.addEventListener('touchmove', (e) => {
+                if(e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    const normX = (touch.clientX / window.innerWidth) * 2 - 1;
+                    const normY = -(touch.clientY / window.innerHeight) * 2 + 1;
+                    targetRotationY = normX * 0.75;
+                    targetRotationX = -normY * 0.55;
+                }
+            }, { passive: true });
+
+            // Handle Resize
+            window.addEventListener('resize', onWindowResize);
+
+            animateLoop();
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('threeCanvasWrapper');
+            if (!container || !renderer || !camera) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        let clock = new THREE.Clock();
+        function animateLoop() {
+            requestAnimationFrame(animateLoop);
+            const elapsedTime = clock.getElapsedTime();
+
+            if (skullGroup) {
+                // Smooth head following mouse
+                skullGroup.rotation.y += (targetRotationY - skullGroup.rotation.y) * 0.07;
+                skullGroup.rotation.x += (targetRotationX - skullGroup.rotation.x) * 0.07;
+
+                // Creepy breathing and floating physics
+                skullGroup.position.y = Math.sin(elapsedTime * 2.5) * 0.12;
+                skullGroup.position.x = Math.cos(elapsedTime * 1.5) * 0.05;
+
+                // Eerie slight eye twitch / pulse
+                const pulse = 1 + Math.sin(elapsedTime * 8) * 0.08;
+                creepyEyeLeft.scale.set(pulse, pulse, pulse);
+                creepyEyeRight.scale.set(pulse, pulse, pulse);
+            }
+
+            if (darkAuraParticles) {
+                darkAuraParticles.rotation.y = elapsedTime * 0.2;
+                darkAuraParticles.rotation.x = elapsedTime * 0.1;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function triggerSpookyEyePulse(isTyping) {
+            if (!creepyEyeLeft) return;
+            if (isTyping) {
+                creepyEyeLeft.material.color.setHex(0xffaa00);
+                creepyEyeRight.material.color.setHex(0xffaa00);
+            } else {
+                creepyEyeLeft.material.color.setHex(0xff0033);
+                creepyEyeRight.material.color.setHex(0xff0033);
+            }
+        }
+
+        function sayCharacter(quote, duration = 4000) {
+            characterSpeech.innerText = `«${quote}»`;
+            characterSpeech.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
+            characterSpeech.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(window.speechTimer);
+            window.speechTimer = setTimeout(() => {
+                characterSpeech.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2');
+                characterSpeech.classList.remove('opacity-100', 'translate-y-0');
+            }, duration);
+        }
+
+        // --- UI & Event Setup ---
+        function setupEvents() {
+            // Send Message Form
+            chatForm.addEventListener('submit', handleSendMessage);
+
+            // Auto-expanding Textarea & Shift+Enter Handling
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+            userInput.addEventListener('input', adjustTextareaHeight);
+
+            // Theme Toggle
+            toggleThemeBtn.addEventListener('click', () => {
+                enableDarkMode(!isDarkMode);
+                sayCharacter(isDarkMode ? "سیاه مثل شبِ تار، دم شما گرم!" : "سفید و پاکیزه، نورانی شدی سلطان!");
+            });
+
+            // New Chat & Temp Chat
+            newChatBtn.addEventListener('click', () => startNewChat(false));
+            tempChatBtn.addEventListener('click', () => startNewChat(true));
+            clearAllChatsBtn.addEventListener('click', clearAllHistory);
+
+            // Quick Prompt Cards
+            document.querySelectorAll('.quick-prompt').forEach(card => {
+                card.addEventListener('click', () => {
+                    const promptText = card.querySelector('span.text-xs').innerText;
+                    userInput.value = promptText;
+                    adjustTextareaHeight();
+                    handleSendMessage();
+                });
+            });
+
+            // Mobile Sidebar Toggle
+            sidebarToggleBtn.addEventListener('click', toggleMobileSidebar);
+            sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+            // Settings Modal
+            openSettingsBtn.addEventListener('click', () => {
+                settingsModal.classList.remove('hidden');
+                settingsModal.classList.add('flex');
+            });
+            closeSettingsBtn.addEventListener('click', () => {
+                settingsModal.classList.add('hidden');
+                settingsModal.classList.remove('flex');
+            });
+            saveSettingsBtn.addEventListener('click', saveConfig);
+
+            // Click Avatar interaction
+            avatarInteractBox.addEventListener('click', () => {
+                const quotes = [
+                    "چاکرم داداش! نگام نکن، من حواسم شیش‌دانگ به کارته!",
+                    "ترسیدی سالار؟ ما فقط ظاهرمون خشنه، باطنمون طلا و بامرام!",
+                    "فتح‌الله همیشه بیداره، غصه چیزی رو نخور رفیق.",
+                    "بفرما سلطان، لب تر کنی کل اینترنت رو برات زیر و رو می‌کنم!"
+                ];
+                sayCharacter(quotes[Math.floor(Math.random() * quotes.length)], 4500);
+            });
+        }
+
+        function adjustTextareaHeight() {
+            userInput.style.height = 'auto';
+            userInput.style.height = (userInput.scrollHeight) + 'px';
+        }
+
+        function toggleMobileSidebar() {
+            const isClosed = sidebar.classList.contains('translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('translate-x-full');
+                sidebarBackdrop.classList.remove('hidden');
+            } else {
+                closeMobileSidebar();
+            }
+        }
+
+        function closeMobileSidebar() {
+            sidebar.classList.add('translate-x-full');
+            sidebarBackdrop.classList.add('hidden');
+        }
+
+        function showToast(message, icon = 'fa-circle-check') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            toastIcon.className = `fa-solid ${icon} text-amber-400`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
